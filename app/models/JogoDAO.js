@@ -48,47 +48,35 @@ JogoDAO.prototype.getAcoes = function (usuario, res) {
 
 JogoDAO.prototype.acao = function (acao) {
     this._connection.open(function (erro, mongoClient) {
+        let date = undefined;
+        let moedas = undefined;
+
+        switch (parseInt(acao.acao)) {
+            case 1:
+                date = (new Date()).getTime() + (1 * 60 * 60000);
+                moedas = -2 * acao.quantidade;
+                break;
+            case 2:
+                date = (new Date()).getTime() + (2 * 60 * 60000);
+                moedas = -3 * acao.quantidade;
+                break;
+            case 3:
+                date = (new Date()).getTime() + (5 * 60 * 60000);
+                moedas = -1 * acao.quantidade;
+                break;
+            case 4:
+                date = (new Date()).getTime() + (5 * 60 * 60000);
+                moedas = -1 * acao.quantidade;
+                break;
+        }
+
         mongoClient.collection('acao', function (erro, collection) {
-            let date = undefined;
-
-            switch (parseInt(acao.acao)) {
-                case 1:
-                    date = (new Date()).getTime() + (1 * 60 * 60000);
-                    break;
-                case 2:
-                    date = (new Date()).getTime() + (2 * 60 * 60000);
-                    break;
-                case 3:
-                    date = (new Date()).getTime() + (5 * 60 * 60000);
-                    break;
-                case 4:
-                    date = (new Date()).getTime() + (5 * 60 * 60000);
-                    break;
-            }
-
             acao.acao_termina_em = date;
             collection.insert(acao);
         });
 
         mongoClient.collection('jogo', function (erro, collection) {
-            let moedas = undefined;
-
-            switch (parseInt(acao.acao)) {
-                case 1:
-                    moedas = -2 * acao.quantidade;
-                    break;
-                case 2:
-                    moedas = -3 * acao.quantidade;
-                    break;
-                case 3:
-                    moedas = -1 * acao.quantidade;
-                    break;
-                case 4:
-                    moedas = -1 * acao.quantidade;
-                    break;
-            }
-
-            collection.update({usuario: acao.usuario}, {$inc: {moeda: moedas}});
+            collection.update({ usuario: acao.usuario }, { $inc: { moeda: moedas } });
             mongoClient.close();
         });
     });
