@@ -51,6 +51,13 @@
 		</div>
 		<% } %>
 
+		<% if(comando_invalido == 'R') { %>
+		<div class="alert alert-success" id="msgErro">
+			<strong>Atenção!</strong>
+			<p>Ação foi revogado com sucesso</p>
+		</div>
+		<% } %>
+
 		<div class="row">
 			<div class="col-sm-3 casa">
 				<img src="images/casa_<%=img_casa%>.jpg" />

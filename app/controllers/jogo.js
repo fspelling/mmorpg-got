@@ -50,3 +50,10 @@ module.exports.ordenarSudito = function (application, req, res) {
 
 	res.redirect('/jogo?comando_invalido=N');
 }
+
+module.exports.revogar = function (application, req, res) {
+	var connection = application.config.dbConnection;
+	var JogoDAO = new application.app.models.JogoDAO(connection);
+
+	JogoDAO.revogar(req.query.id, res);
+}

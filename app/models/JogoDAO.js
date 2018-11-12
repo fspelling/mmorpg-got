@@ -1,3 +1,5 @@
+var objectId = require('mongodb').ObjectId;
+
 function JogoDAO(connection) {
     this._connection = connection();
 }
@@ -39,6 +41,18 @@ JogoDAO.prototype.getAcoes = function (usuario, res) {
 
             collection.find({ usuario: { $eq: usuario }, acao_termina_em: { $gt: atual } }).toArray(function (erro, result) {
                 res.render('pergaminhos', { acoes: result });
+            });
+
+            mongoClient.close();
+        });
+    });
+}
+
+JogoDAO.prototype.revogar = function (id, res) {
+    this._connection.open(function (erro, mongoClient) {
+        mongoClient.collection('acao', function (erro, collection) {
+            collection.remove({ _id: { $eq: objectId(id) } }, function(erro) {
+                res.redirect('jogo?comando_invalido=R');
             });
 
             mongoClient.close();
