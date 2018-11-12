@@ -68,7 +68,6 @@ JogoDAO.prototype.acao = function (acao) {
 
             acao.acao_termina_em = date;
             collection.insert(acao);
-            mongoClient.close();
         });
 
         mongoClient.collection('jogo', function (erro, collection) {
@@ -89,7 +88,8 @@ JogoDAO.prototype.acao = function (acao) {
                     break;
             }
 
-            collection.update({usuario: acao.usuario}, {}, {});
+            collection.update({usuario: acao.usuario}, {$inc: {moeda: moedas}});
+            mongoClient.close();
         });
     });
 }
