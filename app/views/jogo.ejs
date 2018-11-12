@@ -44,6 +44,13 @@
 		</div>
 		<% } %>
 
+		<% if(comando_invalido == 'A') { %>
+		<div class="alert alert-success" id="msgErro">
+			<strong>Atenção!</strong>
+			<p>Ação na fila realizada com sucesso</p>
+		</div>
+		<% } %>
+
 		<div class="row">
 			<div class="col-sm-3 casa">
 				<img src="images/casa_<%=img_casa%>.jpg" />
@@ -116,33 +123,56 @@
 	</div>
 
 	<script>
-		$('#btnSair').click(function () {
-			window.document.location.href = '/sair';
-		});
+		$().ready(function () {
+			$('#btnSair').click(function () {
+				window.document.location.href = '/sair';
+			});
 
-		$('#btnAldeoes').click(function () {
-			$('#msgErro').hide();
+			$('#btnAldeoes').click(function () {
+				$('#msgErro').hide();
 
-			$.ajax({
-				url: '/aldeoes',
-				method: 'GET',
-				success: function (data) {
-					$('#acao').html(data);
-				}
+				$.ajax({
+					url: '/aldeoes',
+					method: 'GET',
+					success: function (data) {
+						$('#acao').html(data);
+					}
+				});
+			});
+
+			$('#btnPergaminhos').click(function () {
+				$('#msgErro').hide();
+
+				$.ajax({
+					url: '/pergaminhos',
+					method: 'GET',
+					success: function (data) {
+						$('#acao').html(data);
+
+						clearTimeout(isTime);
+						cronometro();
+					}
+				});
 			});
 		});
 
-		$('#btnPergaminhos').click(function () {
-			$('#msgErro').hide();
+		var isTime = undefined;
 
-			$.ajax({
-				url: '/pergaminhos',
-				method: 'GET',
-				success: function (data) {
-					$('#acao').html(data);
-				}
+		function cronometro() {
+			$('.tempo_restante').each(function () {
+				var segundos = $(this).html();
+				var segundosAtuais = parseInt(segundos) - 1;
+
+				if (segundosAtuais < 0)
+					window.document.location.href = '/jogo?comando_invalido=A';
+				else
+					$(this).html(segundosAtuais);
 			});
-		});
+
+			isTime = setTimeout(function () {
+				cronometro();
+			}, 1000);
+		}
 	</script>
 </body>
 
